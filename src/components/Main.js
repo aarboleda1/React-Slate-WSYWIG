@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-export class Sidebar extends Component {
+export default class Main extends Component {
 	static defaultProps = {
   }
   static propTypes = {
@@ -13,7 +13,7 @@ export class Sidebar extends Component {
 	}
 	render() {
 		return (
-			<div>
+			<div className="main__container">
 				{this.props.children}
 			</div>
 		)

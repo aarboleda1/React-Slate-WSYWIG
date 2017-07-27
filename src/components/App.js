@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import '../stylesheets/App.css';
+import '../stylesheets/main.css';
+import Main from './Main';
+import Sidebar from './Sidebar';
+import DraftEditor from './DraftEditor';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-        </p>
-				
+			<div className="app__container right-nav">	
+				<Sidebar>{'Sidebar'}</Sidebar>
+				<Main>			
+					<DraftEditor/>
+				</Main>
       </div>
     );
   }

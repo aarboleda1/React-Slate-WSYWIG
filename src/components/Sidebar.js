@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-export class EditContainer extends Component {
+export default class Sidebar extends Component {
 	static defaultProps = {
   }
   static propTypes = {
@@ -13,7 +13,7 @@ export class EditContainer extends Component {
 	}
 	render() {
 		return (
-			<div>
+			<div className="sidebar__container">
 				{this.props.children}
 			</div>
 		)

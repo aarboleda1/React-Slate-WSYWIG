@@ -1,41 +1,30 @@
-@import 'layout/sidebar';
-.app__container {
+.container {
     max-width: 1200px;
     width: 100%;
     margin: auto;
     background: #eee;
-    height: 100%;
-    min-height: 800px;
-    .sidebar__container,
-    .main__container {
+    .sidebar,
+    .main {
         padding: 10px;
     }
-    .main__container {
+    .main {
         min-height: 100vh;
         margin-left: 220px;
     }
-    .sidebar__container {
-        min-height: 100vh;
+    .sidebar {
         width: 200px;
         float: left;
         height: 100%;
     }
     &.right-nav {
-        .sidebar__container {
+        .sidebar {
             float: right;
         }
-        .main__container {
+        .main {
             margin-left: 0;
-            margin-right: 275px;
+            margin-right: 220px;
             border-left: none;
             border-right: 2px solid #333;
-            min-width: 600px;
         }
     }
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    font-family: sans-serif;
 }
