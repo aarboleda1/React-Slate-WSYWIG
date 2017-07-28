@@ -1,4 +1,5 @@
 @import 'layout/sidebar';
+@import 'layout/header';
 .app__container {
     max-width: 1200px;
     width: 100%;
@@ -6,6 +7,16 @@
     background: #eee;
     height: 100%;
     min-height: 800px;
+    .header {
+        height: 50px;
+        background: darkgoldenrod;
+        top: 0;
+        width: 100%;
+        padding-top: 0px;
+        h2 {
+            margin-top: 0px;
+        }
+    }
     .sidebar__container,
     .main__container {
         padding: 10px;
@@ -13,6 +24,12 @@
     .main__container {
         min-height: 100vh;
         margin-left: 220px;
+        .editor__wrapper {
+            background-color: white;
+            min-height: 88vh;
+            padding: 15px;
+            border: 1px solid #ddd;
+        }
     }
     .sidebar__container {
         min-height: 100vh;
