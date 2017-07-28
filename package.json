@@ -9,6 +9,9 @@
         "draft-js-inline-toolbar-plugin": "^2.0.0-rc3",
         "draft-js-linkify-plugin": "^2.0.0-rc3",
         "draft-js-plugins-editor": "^2.0.0-beta1",
+        "is-image": "^2.0.0",
+        "is-url": "^1.2.2",
+        "keycode": "^2.1.9",
         "node-sass-chokidar": "0.0.3",
         "npm-run-all": "^4.0.2",
         "react": "^15.6.1",
@@ -16,7 +19,8 @@
         "react-redux": "^5.0.5",
         "react-scripts": "1.0.10",
         "redux": "^3.7.2",
-        "slate": "^0.21.0"
+        "slate": "^0.21.0",
+        "slate-drop-or-paste-images": "^0.5.0"
     },
     "scripts": {
         "build-css": "node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/",
