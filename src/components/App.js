@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import '../stylesheets/main.css';
-import Main from './Main';
-import Sidebar from './Sidebar';
+import Main from './layouts/Main';
+import Sidebar from './layouts/Sidebar';
 import DraftEditor from './DraftEditor';
-
+import Header from './layouts/Header'
+import SlateEditor from './SlateEditor';
 class App extends Component {
   render() {
     return (
-			<div className="app__container right-nav">	
-				<Sidebar>{'Sidebar'}</Sidebar>
+			<div className="app__container">	
+				<Header/>
+				<Sidebar/>
 				<Main>			
-					<DraftEditor/>
+					{/*<DraftEditor/>*/}
+					<SlateEditor/>
 				</Main>
       </div>
     );
