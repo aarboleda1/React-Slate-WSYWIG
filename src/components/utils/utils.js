@@ -7,7 +7,6 @@ export const MarkHotKey = (options) => {
 
       // Prevent the default characters from being inserted.
       event.preventDefault()
-
       // Toggle the mark `type`.
       return state
         .transform()

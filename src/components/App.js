@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import '../stylesheets/main.css';
 import Main from './layouts/Main';
 import Sidebar from './layouts/Sidebar';
-import DraftEditor from './DraftEditor';
+// import DraftEditor from './DraftEditor';
 import Header from './layouts/Header'
 import SlateEditor from './SlateEditor';
+import SlateEditorImage from './SlateEditorImage';
 class App extends Component {
   render() {
     return (
@@ -13,6 +14,7 @@ class App extends Component {
 				<Sidebar/>
 				<Main>			
 					{/*<DraftEditor/>*/}
+					{/*<SlateEditorImage/>*/}
 					<SlateEditor/>
 				</Main>
       </div>
