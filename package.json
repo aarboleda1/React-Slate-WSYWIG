@@ -12,6 +12,8 @@
         "is-image": "^2.0.0",
         "is-url": "^1.2.2",
         "keycode": "^2.1.9",
+        "material-design-icons": "^3.0.1",
+        "material-ui": "^1.0.0-beta.5",
         "node-sass-chokidar": "0.0.3",
         "npm-run-all": "^4.0.2",
         "react": "^15.6.1",
