@@ -10,5 +10,6 @@ const StoreInstance = Store();
 
 ReactDOM.render( <Provider store={StoreInstance}>
    <App />
- </Provider>, document.getElementById('root'));
+ </Provider>, document.getElementById('root')
+);
 registerServiceWorker();

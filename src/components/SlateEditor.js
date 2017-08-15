@@ -88,7 +88,7 @@ export default class SlateEdtior extends Component {
 					<span className="button" onMouseDown={this.onClickImage}>
 						<span className="material-icons">image</span>
 					</span>
-					<span className="button" onMouseDown={this.onClickLink}>
+					<span className="button" style={{paddingLeft: '10px'}}onMouseDown={this.onClickLink}>
 						<span className="material-icons">link</span>
 					</span>					
 				</div>
@@ -125,6 +125,7 @@ export default class SlateEdtior extends Component {
     this.onChange(state)
 	}	
 	onClickLink = (e) => {
+		console.log(e.target)
 		e.preventDefault();
 		let {state} = this.state;
 		const hasLinks = this.hasLinks()
@@ -161,7 +162,6 @@ export default class SlateEdtior extends Component {
 	}	
   insertImage = (state, target, src) => {
     const transform = state.transform()
-		console.log(transform, 'is transform')
     if (target) transform.select(target)
     return transform
       .insertBlock({
@@ -192,24 +192,12 @@ export default class SlateEdtior extends Component {
 		}
 	}
   onPasteText = (e, data, state) => {
-    if (!isUrl(data.text) && !isImage(data.text)) return
-    if (isUrl(data.text)) {
-			const transform = state.transform();
-			return transform
-      .wrapInline({
-        type: 'link',
-        data: {
-          href: data.text
-        }
-      })
-      .collapseToEnd()
-      .apply()
-		} else if (isImage(data.text)) {
-    	return this.insertImage(state, data.target, data.text)
-		}
-
+    if (!isUrl(data.text)) return
+			if (!isImage(data.text)) return
+			return this.insertImage(state, data.target, data.text)
 	}
 	onPaste = (e, data, state, editor) => {	
+		console.log(data.type)
 		// eslint-disable-next-line
     switch (data.type) { 
       case 'files': return this.onDropOrPasteFiles(e, data, state, editor)
