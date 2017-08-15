@@ -3,7 +3,7 @@ export const MarkHotKey = (options) => {
 	return {
 		onKeyDown(event, data, state) {
       // Check that the key pressed matches our `code` option.
-      if (!event.metaKey || event.which != code || event.altKey != isAltKey) return
+      if (!event.metaKey || event.which !== code || event.altKey !== isAltKey) return
 
       // Prevent the default characters from being inserted.
       event.preventDefault()

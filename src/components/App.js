@@ -13,8 +13,6 @@ class App extends Component {
 				<Header/>
 				<Sidebar/>
 				<Main>			
-					{/*<DraftEditor/>*/}
-					{/*<SlateEditorImage/>*/}
 					<SlateEditor/>
 				</Main>
       </div>
