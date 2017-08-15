@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Editor, Raw, Block } from 'slate';
+import { Editor, Raw, Block, Html } from 'slate';
 import isImage from 'is-image';
 import isUrl from 'is-url';
 import initialState from './state.json';
@@ -46,6 +46,10 @@ export default class SlateEdtior extends Component {
 				'heading-two': props => <h2 {...props.attributes}>{props.children}</h2>,
 				'list-item': props => <li {...props.attributes}>{props.children}</li>,
 				'numbered-list': props => <ol {...props.attributes}>{props.children}</ol>,								
+				'align-left': props => <div style={{textAlign: 'left'}}>{props.children}</div>,
+				'align-right': props => <div style={{textAlign: 'right'}}>{props.children}</div>,
+				'align-center': props => <div style={{textAlign: 'center'}}>{props.children}</div>				
+
 			},
 			marks: {
 				bold: {
@@ -111,9 +115,9 @@ export default class SlateEdtior extends Component {
 					{this.renderMarkButton('italic', 'format_italic')}
 					{this.renderMarkButton('underlined', 'format_underlined')}
 					{this.renderMarkButton('code', 'code')}
-					{this.renderBlockButton('align-left', 'format_align_left')}
-					{this.renderBlockButton('align-center', 'format_align_center')}
-					{this.renderBlockButton('align-right', 'format_align_right')}					
+					{this.renderAlignmentButton('align-left', 'format_align_left')}
+					{this.renderAlignmentButton('align-center', 'format_align_center')}
+					{this.renderAlignmentButton('align-right', 'format_align_right')}					
 					{this.renderBlockButton('heading-one', 'looks_one')}
 					{this.renderBlockButton('heading-two', 'looks_two')}
 					{this.renderBlockButton('block-quote', 'format_quote')}
@@ -287,10 +291,30 @@ export default class SlateEdtior extends Component {
       </span>
     )		
 	}
+	onClickAlignment = (alignmentType) => {
+		let {state} = this.state
+		const getType = state => state.blocks.first().type
+		state = state
+			.transform()
+			.setBlock({
+				type: alignmentType,
+				data: { alignmentType, currentBlockType: getType(state) }
+			})
+			.focus()
+			.apply()
+			this.setState({state})
+	}
+	renderAlignmentButton = (alignmentType, icon) => {
+		const isActive = this.hasMark(alignmentType)		
+		const onMouseDown = e => this.onClickAlignment(alignmentType);
+		return (
+		<span className="button" onMouseDown={onMouseDown} data-active={isActive}>
+			<span className="material-icons">{icon}</span>
+		</span>)	
+	}
 	onClickMark = (e, type) => {
 		e.preventDefault();
 		let {state} = this.state;
-		console.log(type, 'is the type')
 		state = state
 			.transform()
 			.toggleMark(type)
@@ -298,10 +322,7 @@ export default class SlateEdtior extends Component {
 		this.setState({state});
 	}
 	alignmentMarkStrategy = (state, align) => {
-		const getType = state => state.blocks.first().type
-		console.log('blah')
-		console.log(state)	
-		
+		const getType = state => state.blocks.first().type		
 		state
 			.transform()
 			.setBlock({
@@ -310,7 +331,7 @@ export default class SlateEdtior extends Component {
 			})
 			.focus()
 			.apply()	
-		console.log(state)	
+		// console.log(state)	
 		this.setState({state})
 	}
 	onClickBlock = (e, type) => {
@@ -320,20 +341,19 @@ export default class SlateEdtior extends Component {
 		const { document } = state
 		if (type.includes('align')) {
 			// const getType = state => state.blocks.first().type
-			
+			console.log('yo')
 			// const alignmentMarkStrategy = (state, align) => {
-			// 	console.log(state, align)
-			// 	state
-			// 		.transform()
-			// 		.setBlock({
-			// 			type: 'alignment',
-			// 			data: { align, currentBlockType: getType(state) }
-			// 		})
-			// 		.focus()
-			// 		.apply()
+				// console.log(state, align)
+				const getType = state => state.blocks.first().type		
+				return state
+					.transform()
+					.setBlock({
+						type: 'alignment',
+						data: { align: 'right', currentBlockType: getType(state) }
+					})
+					.focus()
+					.apply()
 			// }
-			this.alignmentMarkStrategy(state, 'right');
-			return;
 		}
     // Handle everything but list buttons.
     if (type != 'bulleted-list' && type != 'numbered-list') {
