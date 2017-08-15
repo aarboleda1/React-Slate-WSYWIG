@@ -27,17 +27,22 @@
     }
     .main__container {
         min-height: 100vh;
-        margin-left: 220px;
+        margin-left: 130px;
         .editor__wrapper {
             background-color: white;
             min-height: 88vh;
             padding: 15px;
             border: 1px solid #ddd;
+            .menu.toolbar {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+            }
         }
     }
     .sidebar__container {
         min-height: 100vh;
-        width: 200px;
+        width: 100px;
         float: left;
         height: 100%;
     }

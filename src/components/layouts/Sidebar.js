@@ -16,9 +16,9 @@ export default class Sidebar extends Component {
 			<div className="sidebar__container">
 				<span style={{float: 'right'}} onClick={() => console.log('close')}>{'<<'}</span>
 				<h2>{'Place Drag n Drop Blocks here'}</h2>
-				<ul>
+				{/*<ul>
 					<li> 
-						<strong>Bold</strong>: command + B
+						<strong>Home</strong>: command + B
 					</li>
 					<li> 
 						<i>Italic</i>: command + I
@@ -32,7 +32,7 @@ export default class Sidebar extends Component {
 					<li> 
 						<s>Strikethrough</s>: command + alt + S
 					</li>													
-				</ul>
+				</ul>*/}
 			</div>
 		)
 	}
