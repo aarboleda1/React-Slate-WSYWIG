@@ -1,8 +1,8 @@
 # React Slate WSYWIG
 
 A WSYWIG editor built using ReactJS and Slate libraries.
-Demo page coming soon!
 
+View [Demo](http://antonarboleda.io/React-Slate-WSYWIG/)! 
 
 
 ## Features
