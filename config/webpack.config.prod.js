@@ -110,7 +110,7 @@ module.exports = {
       // { parser: { requireEnsure: false } },
 
       // First, run the linter.
-      // It's important to do this before Babel processes the JS.
+			// It's important to do this before Babel processes the JS.
       {
         test: /\.(js|jsx)$/,
         enforce: 'pre',
@@ -163,12 +163,20 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         include: paths.appSrc,
-        loader: require.resolve('babel-loader'),
+				loader: require.resolve('babel-loader'),
         options: {
           
           compact: true,
         },
-      },
+			},
+			{
+				test: /\.scss$/,
+				use: [{
+						loader: "style-loader" // creates style nodes from JS strings
+				}, {
+						loader: "css-loader" // translates CSS into CommonJS
+				}]
+			},			
       // The notation here is somewhat confusing.
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
