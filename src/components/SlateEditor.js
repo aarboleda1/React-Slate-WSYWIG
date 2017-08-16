@@ -1,11 +1,20 @@
 import React, {Component} from 'react';
-import { Editor, Raw, Block } from 'slate';
+import { Editor, Raw, Block, Html } from 'slate';
 import isImage from 'is-image';
 import isUrl from 'is-url';
 import initialState from './state.json';
 import {MarkHotKey} from './utils/utils';
+ import {MenuList, MenuItem} from 'material-ui/Menu';
+// import Popover from 'material-ui/Popover';
+// import MenuItem from 'material-ui/MenuItem';
+// import IconButton from 'material-ui/IconButton';
+// import Rai//sedButton from 'material-ui/RaisedButton';
+// import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+// import ContentFilter from 'material-ui/svg-icons/content/filter-list';
+// import FileFileDownload from 'material-ui/svg-icons/file/file-download';
 // import MdIconPack from 'react-icons/lib/md';
 const DEFAULT_NODE = 'paragraph'
+
 
 const plugins = [
   MarkHotKey({ code: 66, type: 'bold' }),
@@ -46,6 +55,10 @@ export default class SlateEdtior extends Component {
 				'heading-two': props => <h2 {...props.attributes}>{props.children}</h2>,
 				'list-item': props => <li {...props.attributes}>{props.children}</li>,
 				'numbered-list': props => <ol {...props.attributes}>{props.children}</ol>,								
+				'align-left': props => <div style={{textAlign: 'left'}}>{props.children}</div>,
+				'align-right': props => <div style={{textAlign: 'right'}}>{props.children}</div>,
+				'align-center': props => <div style={{textAlign: 'center'}}>{props.children}</div>				
+
 			},
 			marks: {
 				bold: {
@@ -111,18 +124,18 @@ export default class SlateEdtior extends Component {
 					{this.renderMarkButton('italic', 'format_italic')}
 					{this.renderMarkButton('underlined', 'format_underlined')}
 					{this.renderMarkButton('code', 'code')}
-					{this.renderBlockButton('align-left', 'format_align_left')}
-					{this.renderBlockButton('align-center', 'format_align_center')}
-					{this.renderBlockButton('align-right', 'format_align_right')}					
+					{this.renderAlignmentButton('align-left', 'format_align_left')}
+					{this.renderAlignmentButton('align-center', 'format_align_center')}
+					{this.renderAlignmentButton('align-right', 'format_align_right')}					
 					{this.renderBlockButton('heading-one', 'looks_one')}
 					{this.renderBlockButton('heading-two', 'looks_two')}
 					{this.renderBlockButton('block-quote', 'format_quote')}
 					{this.renderBlockButton('numbered-list', 'format_list_numbered')}
 					{this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
-					<span className="button" onMouseDown={this.onClickImage}>
+					<span className="se button" onMouseDown={this.onClickImage}>
 						<span className="material-icons">image</span>
 					</span>
-					<span className="button" style={{paddingLeft: '10px'}}onMouseDown={this.onClickLink}>
+					<span className="se button" style={{paddingLeft: '10px'}}onMouseDown={this.onClickLink}>
 						<span className="material-icons">link</span>
 					</span>		
 				</div>
@@ -156,7 +169,6 @@ export default class SlateEdtior extends Component {
     if (!src) return
     let { state } = this.state
 		state = this.insertImage(state, null, src)
-		console.log(state)
     this.onChange(state)
 	}	
   onClickLink = (e) => {
@@ -170,7 +182,6 @@ export default class SlateEdtior extends Component {
         .apply()
     }
     else if (state.isExpanded) {
-			console.log('insdie the isExpanded??')
       const href = window.prompt('Enter the URL of the link:')
       state = state
         .transform()
@@ -272,7 +283,7 @@ export default class SlateEdtior extends Component {
 	renderBlockButton = (type, icon) => {
 		const isActive = this.hasMark(type);
 		return (
-			<span className="button" onMouseDown={(e) => this.onClickBlock(e, type)} data-active={isActive}>
+			<span className="se button" onMouseDown={(e) => this.onClickBlock(e, type)} data-active={isActive}>
 				<span className="material-icons">{icon}</span>
 			</span>
 		)
@@ -282,15 +293,36 @@ export default class SlateEdtior extends Component {
     const onMouseDown = e => this.onClickMark(e, type)
 
     return (
-      <span className="button" onMouseDown={onMouseDown} data-active={isActive}>
+      <span className="se button" onMouseDown={onMouseDown} data-active={isActive}>
         <span className="material-icons">{icon}</span>
       </span>
     )		
 	}
+	onClickAlignment = (alignmentType) => {
+		let {state} = this.state
+		const getType = state => state.blocks.first().type
+		state = state
+			.transform()
+			.setBlock({
+				type: alignmentType,
+				data: { alignmentType, currentBlockType: getType(state) }
+			})
+			.focus()
+			.apply()
+			this.setState({state})
+	}
+	renderAlignmentButton = (alignmentType, icon) => {
+		const isActive = this.hasMark(alignmentType)		
+		const onMouseDown = e => this.onClickAlignment(alignmentType);
+		return (
+			<span className="se button" onMouseDown={onMouseDown} data-active={isActive}>
+				<span className="material-icons">{icon}</span>
+			</span>
+		)	
+	}
 	onClickMark = (e, type) => {
 		e.preventDefault();
 		let {state} = this.state;
-		console.log(type, 'is the type')
 		state = state
 			.transform()
 			.toggleMark(type)
@@ -298,10 +330,7 @@ export default class SlateEdtior extends Component {
 		this.setState({state});
 	}
 	alignmentMarkStrategy = (state, align) => {
-		const getType = state => state.blocks.first().type
-		console.log('blah')
-		console.log(state)	
-		
+		const getType = state => state.blocks.first().type		
 		state
 			.transform()
 			.setBlock({
@@ -310,7 +339,6 @@ export default class SlateEdtior extends Component {
 			})
 			.focus()
 			.apply()	
-		console.log(state)	
 		this.setState({state})
 	}
 	onClickBlock = (e, type) => {
@@ -319,24 +347,18 @@ export default class SlateEdtior extends Component {
     const transform = state.transform()
 		const { document } = state
 		if (type.includes('align')) {
-			// const getType = state => state.blocks.first().type
-			
-			// const alignmentMarkStrategy = (state, align) => {
-			// 	console.log(state, align)
-			// 	state
-			// 		.transform()
-			// 		.setBlock({
-			// 			type: 'alignment',
-			// 			data: { align, currentBlockType: getType(state) }
-			// 		})
-			// 		.focus()
-			// 		.apply()
-			// }
-			this.alignmentMarkStrategy(state, 'right');
-			return;
+				const getType = state => state.blocks.first().type		
+				return state
+					.transform()
+					.setBlock({
+						type: 'alignment',
+						data: { align: 'right', currentBlockType: getType(state) }
+					})
+					.focus()
+					.apply()
 		}
     // Handle everything but list buttons.
-    if (type != 'bulleted-list' && type != 'numbered-list') {
+    if (type !== 'bulleted-list' && type !== 'numbered-list') {
       const isActive = this.hasBlock(type)
       const isList = this.hasBlock('list-item')
 
