@@ -10,7 +10,10 @@ class App extends Component {
     return (
 			<div className="app__container">	
 				<Header/>
-				<Sidebar/>
+				{/*
+					<Sidebar/> 
+					render this sidebar for drag and drop functionality
+				*/}
 				<Main>			
 					<SlateEditor/>
 				</Main>

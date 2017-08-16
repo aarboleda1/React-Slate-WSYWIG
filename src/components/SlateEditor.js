@@ -4,8 +4,17 @@ import isImage from 'is-image';
 import isUrl from 'is-url';
 import initialState from './state.json';
 import {MarkHotKey} from './utils/utils';
+import {MenuList, MenuItem} from 'material-ui/Menu';
+// import Popover from 'material-ui/Popover';
+// import MenuItem from 'material-ui/MenuItem';
+// import IconButton from 'material-ui/IconButton';
+// import RaisedButton from 'material-ui/RaisedButton';
+// import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+// import ContentFilter from 'material-ui/svg-icons/content/filter-list';
+// import FileFileDownload from 'material-ui/svg-icons/file/file-download';
 // import MdIconPack from 'react-icons/lib/md';
 const DEFAULT_NODE = 'paragraph'
+
 
 const plugins = [
   MarkHotKey({ code: 66, type: 'bold' }),
@@ -123,10 +132,10 @@ export default class SlateEdtior extends Component {
 					{this.renderBlockButton('block-quote', 'format_quote')}
 					{this.renderBlockButton('numbered-list', 'format_list_numbered')}
 					{this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
-					<span className="button" onMouseDown={this.onClickImage}>
+					<span className="se button" onMouseDown={this.onClickImage}>
 						<span className="material-icons">image</span>
 					</span>
-					<span className="button" style={{paddingLeft: '10px'}}onMouseDown={this.onClickLink}>
+					<span className="se button" style={{paddingLeft: '10px'}}onMouseDown={this.onClickLink}>
 						<span className="material-icons">link</span>
 					</span>		
 				</div>
@@ -276,7 +285,7 @@ export default class SlateEdtior extends Component {
 	renderBlockButton = (type, icon) => {
 		const isActive = this.hasMark(type);
 		return (
-			<span className="button" onMouseDown={(e) => this.onClickBlock(e, type)} data-active={isActive}>
+			<span className="se button" onMouseDown={(e) => this.onClickBlock(e, type)} data-active={isActive}>
 				<span className="material-icons">{icon}</span>
 			</span>
 		)
@@ -286,7 +295,7 @@ export default class SlateEdtior extends Component {
     const onMouseDown = e => this.onClickMark(e, type)
 
     return (
-      <span className="button" onMouseDown={onMouseDown} data-active={isActive}>
+      <span className="se button" onMouseDown={onMouseDown} data-active={isActive}>
         <span className="material-icons">{icon}</span>
       </span>
     )		
@@ -308,9 +317,10 @@ export default class SlateEdtior extends Component {
 		const isActive = this.hasMark(alignmentType)		
 		const onMouseDown = e => this.onClickAlignment(alignmentType);
 		return (
-		<span className="button" onMouseDown={onMouseDown} data-active={isActive}>
-			<span className="material-icons">{icon}</span>
-		</span>)	
+			<span className="se button" onMouseDown={onMouseDown} data-active={isActive}>
+				<span className="material-icons">{icon}</span>
+			</span>
+		)	
 	}
 	onClickMark = (e, type) => {
 		e.preventDefault();
