@@ -1,6 +1,6 @@
 import { createStore } from 'redux';
 import rootReducer from  './reducers/reducers.js';
-const initialState = {test: '123'}
+// const initialState = {test: '123'}
 export default(initialState) => {
     return createStore(
 			rootReducer, 

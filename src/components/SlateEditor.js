@@ -4,11 +4,11 @@ import isImage from 'is-image';
 import isUrl from 'is-url';
 import initialState from './state.json';
 import {MarkHotKey} from './utils/utils';
-import {MenuList, MenuItem} from 'material-ui/Menu';
+ import {MenuList, MenuItem} from 'material-ui/Menu';
 // import Popover from 'material-ui/Popover';
 // import MenuItem from 'material-ui/MenuItem';
 // import IconButton from 'material-ui/IconButton';
-// import RaisedButton from 'material-ui/RaisedButton';
+// import Rai//sedButton from 'material-ui/RaisedButton';
 // import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 // import ContentFilter from 'material-ui/svg-icons/content/filter-list';
 // import FileFileDownload from 'material-ui/svg-icons/file/file-download';
@@ -169,7 +169,6 @@ export default class SlateEdtior extends Component {
     if (!src) return
     let { state } = this.state
 		state = this.insertImage(state, null, src)
-		console.log(state)
     this.onChange(state)
 	}	
   onClickLink = (e) => {
@@ -183,7 +182,6 @@ export default class SlateEdtior extends Component {
         .apply()
     }
     else if (state.isExpanded) {
-			console.log('insdie the isExpanded??')
       const href = window.prompt('Enter the URL of the link:')
       state = state
         .transform()
@@ -341,7 +339,6 @@ export default class SlateEdtior extends Component {
 			})
 			.focus()
 			.apply()	
-		// console.log(state)	
 		this.setState({state})
 	}
 	onClickBlock = (e, type) => {
@@ -350,10 +347,6 @@ export default class SlateEdtior extends Component {
     const transform = state.transform()
 		const { document } = state
 		if (type.includes('align')) {
-			// const getType = state => state.blocks.first().type
-			console.log('yo')
-			// const alignmentMarkStrategy = (state, align) => {
-				// console.log(state, align)
 				const getType = state => state.blocks.first().type		
 				return state
 					.transform()
@@ -363,10 +356,9 @@ export default class SlateEdtior extends Component {
 					})
 					.focus()
 					.apply()
-			// }
 		}
     // Handle everything but list buttons.
-    if (type != 'bulleted-list' && type != 'numbered-list') {
+    if (type !== 'bulleted-list' && type !== 'numbered-list') {
       const isActive = this.hasBlock(type)
       const isList = this.hasBlock('list-item')
 
