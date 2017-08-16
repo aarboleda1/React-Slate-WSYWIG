@@ -2,6 +2,7 @@
     "name": "drag_n_drop_content_editor",
     "version": "0.1.0",
     "private": true,
+    "homepage": "https://github.com/aarboleda1/React-Slate-WSYWIG",
     "dependencies": {
         "draft-js": "^0.10.1",
         "draft-js-buttons": "^2.0.0-beta6",
