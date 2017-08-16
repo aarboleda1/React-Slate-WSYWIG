@@ -3,7 +3,7 @@
 @import 'base/all';
 @import 'base/color';
 .app__container {
-    max-width: 1200px;
+    min-width: 600px;
     width: 100%;
     margin: auto;
     background: #eee;
