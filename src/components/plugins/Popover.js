@@ -12,17 +12,9 @@ export default class Popover extends Component {
 	}
 	constructor(props){
 		super(props)
-
-	}
-	componentWillReceiveProps(props){
-		// console.log(props)
-	}
-	componentDidUpdate(props) {
-		// console.log('did update')
 	}
 	handleImageChange = (e) => {
     e.preventDefault();
-
     let reader = new FileReader();
     let file = e.target.files[0];
 
@@ -44,7 +36,6 @@ export default class Popover extends Component {
 				onAddImage(event);
 				break;
 			case('linkUrl'):
-				console.log('added')
 				onAddLink()
 				break;
 			default:
@@ -56,7 +47,10 @@ export default class Popover extends Component {
 		return(
 			<div className={`rs-popover ${isActive ? 'active' : null}`}>			
 			  <h6>{popOverType === 'imageUrl' ? 'Insert Image URL' : 'Insert URL'}</h6>
-				<input value={inputUrl} onChange={(event) => handleTextChange(event.target.value, popOverType) }/>
+				<input 
+					value={inputUrl} 
+					onChange={(event) => handleTextChange(event.target.value, popOverType) }
+				/>
 				{	popOverType === 'linkUrl' ?
 					<div className="rs-button-container">
 						<h6>Target</h6> 

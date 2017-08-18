@@ -211,7 +211,7 @@ export default class SlateEdtior extends Component {
 		}		
 	}
 	onDocumentChange = () => {
-		console.log(serializer)
+		// console.log(serializer)
 	}
   onChange = (state) => {
     this.setState({ state })
@@ -240,7 +240,6 @@ export default class SlateEdtior extends Component {
 	onAddImage = (e) => {
 		e.stopPropagation();
 		const src = this.state.imageUrl;
-		console.log(src, 'is the src')
     if (!src) this.setState({isImageExpanded: !this.state.isImageExpanded})			
 		let { state } = this.state
 		state = this.insertImage(state, null, src)
@@ -251,10 +250,10 @@ export default class SlateEdtior extends Component {
 		});
 	}
 	onAddLink = () => {
-    let { state } = this.state		
-		const href = this.state.linkUrl;
+    let { state, targetText, linkUrl } = this.state		
+		const href = linkUrl;
 		if (!href) return;
-		const text = this.state.targetText;
+		const text = targetText;
 		if (!text) return;
 		state = state
 			.transform()
@@ -266,50 +265,13 @@ export default class SlateEdtior extends Component {
 			})
 			.collapseToEnd()
 			.apply()
-		this.setState({ state })			
+		this.setState({ 
+			state,
+			targetText: '',
+			linkUrl: '',
+		 })			
 	}
 	
-  onClickLink = (event) => {
-    event.preventDefault()
-    let { state } = this.state
-    const hasLinks = this.hasLinks()
-    if (hasLinks) {
-      state = state
-        .transform()
-        .unwrapInline('link')
-        .apply()
-    }
-    else if (state.isExpanded) {
-			const href = window.prompt('Enter the URL of the link:')
-			console.log(href, 'is the href')
-      state = state
-        .transform()
-        .wrapInline({
-          type: 'link',
-          data: { href }
-        })
-        .collapseToEnd()
-        .apply()
-    }
-    else {
-			const href = window.prompt('Enter the URL of the link:');
-			if (!href) return;
-			const text = window.prompt('Enter the text for the link:')
-			if (!text) return;
-			console.log(href, text)			
-      state = state
-        .transform()
-        .insertText(text)
-        .extend(0 - text.length)
-        .wrapInline({
-          type: 'link',
-          data: { href }
-        })
-        .collapseToEnd()
-        .apply()
-    }
-    this.setState({ state })
-  }
   insertImage = (state, target, src) => {
     const transform = state.transform()
     if (target) transform.select(target)
