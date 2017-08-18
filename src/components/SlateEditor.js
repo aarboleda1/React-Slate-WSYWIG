@@ -69,7 +69,7 @@ export default class SlateEdtior extends Component {
 					link: (props) => {
 						const {data}= props.node;
 						let href = data.get('href');
-						return <a {...props.attributes} href={href}>{props.children}</a>
+						return <a {...props.attributes} target="_blank" href={href}>{props.children}</a>
 					},
 					'block-quote': props => <blockquote {...props.attributes}>{props.children}</blockquote>,
 					'bulleted-list': props => <ul {...props.attributes}>{props.children}</ul>,
@@ -230,7 +230,8 @@ export default class SlateEdtior extends Component {
 					});
 					break;
 				case('LinkModal'):
-					this.setState({isLinkModalExpanded: !isLinkModalExpanded})
+					this.setState({
+						isLinkModalExpanded: !isLinkModalExpanded})
 					break;
 				default: 
 					return;

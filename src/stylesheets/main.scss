@@ -68,6 +68,9 @@
             border: 1px solid #ddd;
             margin: 0 10px;
             width: 72%;
+            a {
+                cursor: pointer;
+            }
             .menu.toolbar {
                 display: flex;
                 flex-direction: row;
