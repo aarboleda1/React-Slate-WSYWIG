@@ -1,0 +1,28 @@
+.rs-popover {
+    position: absolute;
+    min-width: 200px;
+    max-width: 380px;
+    z-index: 17;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 0.3s, opacity 0.3s;
+    &.active {
+        visibility: visible;
+        opacity: 1;
+        transition-delay: 0s;
+        display: flex;
+        flex-direction: column;
+        // width: 235px;
+        // height: 205px;
+        border: 1px solid #F1F1F1;
+        padding: 15px;
+        border-radius: 2px;
+        z-index: 100;
+        background: white;
+        box-shadow: 3px 3px 5px #BFBDBD;
+    }
+}
+
+.rs-button-container {
+    display: flex;
+}

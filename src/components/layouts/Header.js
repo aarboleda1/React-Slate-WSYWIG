@@ -8,8 +8,7 @@ const Header = () => (
 			<div style={{"clear": "both"}}></div>
 		</div>
 		<div className="se main-content">
-			<h1>React Slate WYSIWYG</h1>
-			<h5>A WYSIWYG Editor built using React and Slate</h5>	
+			<h1>React/Slate WYSIWYG Editor</h1>
 		</div>
 	</div>
 )

@@ -5,15 +5,29 @@ import isUrl from 'is-url';
 import initialState from './state.json';
 import {MarkHotKey} from './utils/utils';
  import {MenuList, MenuItem} from 'material-ui/Menu';
-// import Popover from 'material-ui/Popover';
-// import MenuItem from 'material-ui/MenuItem';
-// import IconButton from 'material-ui/IconButton';
-// import Rai//sedButton from 'material-ui/RaisedButton';
-// import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-// import ContentFilter from 'material-ui/svg-icons/content/filter-list';
-// import FileFileDownload from 'material-ui/svg-icons/file/file-download';
-// import MdIconPack from 'react-icons/lib/md';
-const DEFAULT_NODE = 'paragraph'
+ import Popover from './plugins/Popover';
+
+const DEFAULT_NODE = 'paragraph';
+// let rule = new Html();
+const RULES =[
+	{ 
+		deserialize(el, next){
+      if (el.tagName.toLowerCase() === 'p') {
+        return {
+          kind: 'block',
+          type: 'paragraph',
+          nodes: next(el.childNodes)
+        }
+      }			
+		},
+		serialize(object, children) {
+			if (object.kind === 'block' && object.type === 'paragraph') {
+				return <p>{children}</p>
+			}
+		}
+	}, 
+]
+const serializer = new Html({RULES})
 
 
 const plugins = [
@@ -30,93 +44,99 @@ const defaultBlock = {
 }
 export default class SlateEdtior extends Component { 
  // Set the initial state when the app is first constructed.
-  state = {
-		state: Raw.deserialize(initialState, { terse: true }),
-	  schema: {
-			nodes: {
-				// paragraph: (props) => <p {...props.attributes}>{props.children}</p>,	
-				image: (props) => {
-					const { node, state } = props;
-					const active = state.isFocused && state.selection.hasEdgeIn(node);
-					const src = node.data.get('src');
-					const className = active ? 'active' : null;
-					return (
-						<img src={src} alt="" className={className} {...props.attributes} />
-					)
-				},				
-				link: (props) => {
-					const {data}= props.node;
-					let href = data.get('href');
-					return <a {...props.attributes} href={href}>{props.children}</a>
-				},
-				'block-quote': props => <blockquote {...props.attributes}>{props.children}</blockquote>,
-				'bulleted-list': props => <ul {...props.attributes}>{props.children}</ul>,
-				'heading-one': props => <h1 {...props.attributes}>{props.children}</h1>,
-				'heading-two': props => <h2 {...props.attributes}>{props.children}</h2>,
-				'list-item': props => <li {...props.attributes}>{props.children}</li>,
-				'numbered-list': props => <ol {...props.attributes}>{props.children}</ol>,								
-				'align-left': props => <div style={{textAlign: 'left'}}>{props.children}</div>,
-				'align-right': props => <div style={{textAlign: 'right'}}>{props.children}</div>,
-				'align-center': props => <div style={{textAlign: 'center'}}>{props.children}</div>				
-
-			},
-			marks: {
-				bold: {
-					fontWeight: 'bold'
-				},
-				code: {
-					fontFamily: 'monospace',
-					backgroundColor: '#eee',
-					padding: '3px',
-					borderRadius: '4px'
-				},
-				italic: {
-					fontStyle: 'italic'
-				},
-				underlined: {
-					textDecoration: 'underline'
-				},
-				'align-left': {
-					textAlign: 'left',
-				},
-				'align-right':{
-					textAlign: 'right',
-				}
-
-			},
-			rules: [
-					// Rule to insert a paragraph block if the document is empty.
-					{
-						match: (node) => {
-							return node.kind === 'document'
-						},
-						validate: (document) => {
-							return document.nodes.size ? null : true
-						},
-						normalize: (transform, document) => {
-							const block = Block.create(defaultBlock)
-							transform.insertNodeByKey(document.key, 0, block)
-						}
+	// static props
+	constructor(props) {
+		super(props)
+		this.state = {
+			isImageExpanded: false,
+			inputUrl: '',
+			state: Raw.deserialize(initialState, { terse: true }),
+			schema: {
+				nodes: {
+					paragraph: (props) => <p {...props.attributes}>{props.children}</p>,	
+					image: (props) => {
+						const { node, state } = props;
+						const active = state.isFocused && state.selection.hasEdgeIn(node);
+						const src = node.data.get('src');
+						const className = active ? 'active' : null;
+						return (
+							<img src={src} alt="" className={className} {...props.attributes} />
+						)
+					},				
+					link: (props) => {
+						const {data}= props.node;
+						let href = data.get('href');
+						return <a {...props.attributes} href={href}>{props.children}</a>
 					},
-					// Rule to insert a paragraph below a void node (the image) if that node is
-					// the last one in the document.
-					{
-						match: (node) => {
-							return node.kind === 'document'
-						},
-						validate: (document) => {
-							const lastNode = document.nodes.last()
-							return lastNode && lastNode.isVoid ? true : null
-						},
-						normalize: (transform, document) => {
-							const block = Block.create(defaultBlock)
-							transform.insertNodeByKey(document.key, document.nodes.size, block)
-						}
+					'block-quote': props => <blockquote {...props.attributes}>{props.children}</blockquote>,
+					'bulleted-list': props => <ul {...props.attributes}>{props.children}</ul>,
+					'heading-one': props => <h1 {...props.attributes}>{props.children}</h1>,
+					'heading-two': props => <h2 {...props.attributes}>{props.children}</h2>,
+					'list-item': props => <li {...props.attributes}>{props.children}</li>,
+					'numbered-list': props => <ol {...props.attributes}>{props.children}</ol>,								
+					'align-left': props => <div style={{textAlign: 'left'}}>{props.children}</div>,
+					'align-right': props => <div style={{textAlign: 'right'}}>{props.children}</div>,
+					'align-center': props => <div style={{textAlign: 'center'}}>{props.children}</div>				
+	
+				},
+				marks: {
+					bold: {
+						fontWeight: 'bold'
+					},
+					code: {
+						fontFamily: 'monospace',
+						backgroundColor: '#eee',
+						padding: '3px',
+						borderRadius: '4px'
+					},
+					italic: {
+						fontStyle: 'italic'
+					},
+					underlined: {
+						textDecoration: 'underline'
+					},
+					'align-left': {
+						textAlign: 'left',
+					},
+					'align-right':{
+						textAlign: 'right',
 					}
-				]			
-    }
-	}
-  render = () => {
+	
+				},
+				rules: [
+						// Rule to insert a paragraph block if the document is empty.
+						{
+							match: (node) => {
+								return node.kind === 'document'
+							},
+							validate: (document) => {
+								return document.nodes.size ? null : true
+							},
+							normalize: (transform, document) => {
+								const block = Block.create(defaultBlock)
+								transform.insertNodeByKey(document.key, 0, block)
+							}
+						},
+						// Rule to insert a paragraph below a void node (the image) if that node is
+						// the last one in the document.
+						{
+							match: (node) => {
+								return node.kind === 'document'
+							},
+							validate: (document) => {
+								const lastNode = document.nodes.last()
+								return lastNode && lastNode.isVoid ? true : null
+							},
+							normalize: (transform, document) => {
+								const block = Block.create(defaultBlock)
+								transform.insertNodeByKey(document.key, document.nodes.size, block)
+							}
+						}
+					]			
+			}
+		}
+	} 
+  render = () => {		
     return (
 			<div className="editor__wrapper ">
 				<div style={{borderBottom: '1px solid gray'}} className="menu toolbar">
@@ -132,10 +152,16 @@ export default class SlateEdtior extends Component {
 					{this.renderBlockButton('block-quote', 'format_quote')}
 					{this.renderBlockButton('numbered-list', 'format_list_numbered')}
 					{this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
-					<span className="se button" onMouseDown={this.onClickImage}>
+					<span className="se button" onMouseDown={this.onOpenModal}>
 						<span className="material-icons">image</span>
+						<Popover 
+							isActive={this.state.isImageExpanded}
+							inputUrl={this.state.inputUrl}
+							handleTextChange={this.handleTextChange}
+							onAddImage={this.onAddImage}
+						/>					
 					</span>
-					<span className="se button" style={{paddingLeft: '10px'}}onMouseDown={this.onClickLink}>
+					<span className="se button" style={{paddingLeft: '10px'}} onMouseDown={this.onClickLink}>
 						<span className="material-icons">link</span>
 					</span>		
 				</div>
@@ -149,12 +175,19 @@ export default class SlateEdtior extends Component {
 						onDrop={this.onDrop}
 						onPaste={this.onPaste}
 						onKeyDown={this.onKeyDown}
+						onDocumentChange={this.onDocumentChange}
 					/>
 				</div>
 			</div>
     )
   }	
 	componentDidUpdate = () => {
+	}
+	handleTextChange = (text) => {
+		this.setState({inputUrl: text})
+	}
+	onDocumentChange = () => {
+		console.log(serializer)
 	}
   onChange = (state) => {
     this.setState({ state })
@@ -163,14 +196,24 @@ export default class SlateEdtior extends Component {
 		const {state} = this.state;
 		return state.inlines.some(inline => inline.type === 'link');
 	}
-  onClickImage = (e) => {
-    e.preventDefault()
-    const src = window.prompt('Enter the URL of the image:')
-    if (!src) return
-    let { state } = this.state
-		state = this.insertImage(state, null, src)
-    this.onChange(state)
+  onOpenModal = (e) => {
+		if (e.target.className === 'se button' || e.target.className === 'material-icons') {
+			this.setState({isImageExpanded: !this.state.isImageExpanded})
+		}
 	}	
+	onAddImage = (e) => {
+		e.stopPropagation();
+		const src = this.state.inputUrl;
+    if (!src) this.setState({isImageExpanded: !this.state.isImageExpanded})			
+		let { state } = this.state
+		state = this.insertImage(state, null, src)
+		this.onChange(state)
+		this.setState({
+			inputUrl: '',
+			isImageExpanded: !this.state.isImageExpanded,
+		});
+	}
+	
   onClickLink = (e) => {
     e.preventDefault()
     let { state } = this.state

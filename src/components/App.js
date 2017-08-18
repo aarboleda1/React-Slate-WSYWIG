@@ -5,17 +5,25 @@ import Main from './layouts/Main';
 // import DraftEditor from './DraftEditor';
 import Header from './layouts/Header'
 import SlateEditor from './SlateEditor';
+import HtmlViewer from './HtmlViewer';
+import serializedHTML from './utils/utils';
+// import SerializedEditor from './SerializedEditor.js';
+import Sidebar from './layouts/Sidebar';
 class App extends Component {
   render() {
     return (
 			<div className="app__container">	
-				<Header/>
-				{/*
-					<Sidebar/> 
-					render this sidebar for drag and drop functionality
+				<Header/>				
+				{/*<Sidebar/>
 				*/}
 				<Main>			
-					<SlateEditor/>
+					<SlateEditor 
+						serializedHTML={serializedHTML}
+					/>
+					{/*	
+							<SerializedEditor/> testing for serialization 
+					/>*/}
+					{/*<HtmlViewer/>*/}
 				</Main>
       </div>
     );
