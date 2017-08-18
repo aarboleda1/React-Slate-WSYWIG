@@ -26,3 +26,12 @@
 .rs-button-container {
     display: flex;
 }
+
+h6,
+input,
+.rs-button-container {
+    display: block;
+    margin: $modal-entity-padding;
+    font-family: $primary-font-family;
+    font-weight: $primary-font-weight;
+}

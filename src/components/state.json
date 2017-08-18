@@ -20,7 +20,7 @@
             "type": "paragraph",
             "nodes": [{
                 "kind": "text",
-                "text": "This example shows images in action. It features two ways to add images. You can either add an image via the toolbar icon above, or if you want in on a little secret, copy an image URL to your keyboard and paste it anywhere in the editor!"
+                "text": "This example shows images and text in action. Add images andlinks. Additionally, You can either add an image via the toolbar icon above, or if you want in on a little secret, copy an image URL to your keyboard and paste it anywhere in the editor!"
             }]
         }
     ]
