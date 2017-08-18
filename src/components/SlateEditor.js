@@ -49,7 +49,10 @@ export default class SlateEdtior extends Component {
 		super(props)
 		this.state = {
 			isImageExpanded: false,
-			inputUrl: '',
+			isLinkModalExpanded: false,
+			imageUrl: '',
+			linkUrl: '',
+			targetText: '',
 			state: Raw.deserialize(initialState, { terse: true }),
 			schema: {
 				nodes: {
@@ -152,17 +155,26 @@ export default class SlateEdtior extends Component {
 					{this.renderBlockButton('block-quote', 'format_quote')}
 					{this.renderBlockButton('numbered-list', 'format_list_numbered')}
 					{this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
-					<span className="se button" onMouseDown={this.onOpenModal}>
+					<span className="se button" onMouseDown={(e) => this.onOpenModal(e, 'ImageModal') }>
 						<span className="material-icons">image</span>
 						<Popover 
 							isActive={this.state.isImageExpanded}
-							inputUrl={this.state.inputUrl}
+							imageUrl={this.state.imageUrl}
 							handleTextChange={this.handleTextChange}
 							onAddImage={this.onAddImage}
+							popOverType={'imageUrl'}
 						/>					
 					</span>
-					<span className="se button" style={{paddingLeft: '10px'}} onMouseDown={this.onClickLink}>
+					<span className="se button" style={{paddingLeft: '10px'}} onMouseDown={(e) => this.onOpenModal(e, 'LinkModal')}>
 						<span className="material-icons">link</span>
+						<Popover 
+							isActive={this.state.isLinkModalExpanded}
+							inputUrl={this.state.inputUrl}
+							targetText={this.state.targetText}
+							handleTextChange={this.handleTextChange}
+							onAddLink={this.onAddLink}
+							popOverType={'linkUrl'}
+						/>							
 					</span>		
 				</div>
 				<div className="editor">
@@ -183,11 +195,23 @@ export default class SlateEdtior extends Component {
   }	
 	componentDidUpdate = () => {
 	}
-	handleTextChange = (text) => {
-		this.setState({inputUrl: text})
+	handleTextChange = (text, type) => {
+		switch(type) {
+			case('imageUrl'):
+				this.setState({imageUrl: text})
+				break;
+			case('linkUrl'):
+				this.setState({linkUrl: text})
+				break;
+			case('targetText'):
+				this.setState({targetText: text})
+				break;				
+			default:
+				return;
+		}		
 	}
 	onDocumentChange = () => {
-		console.log(serializer)
+		// console.log(serializer)
 	}
   onChange = (state) => {
     this.setState({ state })
@@ -196,63 +220,58 @@ export default class SlateEdtior extends Component {
 		const {state} = this.state;
 		return state.inlines.some(inline => inline.type === 'link');
 	}
-  onOpenModal = (e) => {
+  onOpenModal = (e, modalType) => {
+		const {isImageExpanded, isLinkModalExpanded} = this.state;
 		if (e.target.className === 'se button' || e.target.className === 'material-icons') {
-			this.setState({isImageExpanded: !this.state.isImageExpanded})
+			switch(modalType) {
+				case('ImageModal'):
+					this.setState({
+						isImageExpanded: !isImageExpanded,
+					});
+					break;
+				case('LinkModal'):
+					this.setState({isLinkModalExpanded: !isLinkModalExpanded})
+					break;
+				default: 
+					return;
+			}
 		}
 	}	
 	onAddImage = (e) => {
 		e.stopPropagation();
-		const src = this.state.inputUrl;
+		const src = this.state.imageUrl;
     if (!src) this.setState({isImageExpanded: !this.state.isImageExpanded})			
 		let { state } = this.state
 		state = this.insertImage(state, null, src)
 		this.onChange(state)
 		this.setState({
-			inputUrl: '',
+			imageUrl: '',
 			isImageExpanded: !this.state.isImageExpanded,
 		});
 	}
+	onAddLink = () => {
+    let { state, targetText, linkUrl } = this.state		
+		const href = linkUrl;
+		if (!href) return;
+		const text = targetText;
+		if (!text) return;
+		state = state
+			.transform()
+			.insertText(text)
+			.extend(0 - text.length)
+			.wrapInline({
+				type: 'link',
+				data: { href }
+			})
+			.collapseToEnd()
+			.apply()
+		this.setState({ 
+			state,
+			targetText: '',
+			linkUrl: '',
+		 })			
+	}
 	
-  onClickLink = (e) => {
-    e.preventDefault()
-    let { state } = this.state
-    const hasLinks = this.hasLinks()
-    if (hasLinks) {
-      state = state
-        .transform()
-        .unwrapInline('link')
-        .apply()
-    }
-    else if (state.isExpanded) {
-      const href = window.prompt('Enter the URL of the link:')
-      state = state
-        .transform()
-        .wrapInline({
-          type: 'link',
-          data: { href }
-        })
-        .collapseToEnd()
-        .apply()
-    }
-    else {
-			const href = window.prompt('Enter the URL of the link:');
-			if (!href) return;
-			const text = window.prompt('Enter the text for the link:')
-			if (!text) return;			
-      state = state
-        .transform()
-        .insertText(text)
-        .extend(0 - text.length)
-        .wrapInline({
-          type: 'link',
-          data: { href }
-        })
-        .collapseToEnd()
-        .apply()
-    }
-    this.setState({ state })
-  }
   insertImage = (state, target, src) => {
     const transform = state.transform()
     if (target) transform.select(target)
@@ -417,7 +436,6 @@ export default class SlateEdtior extends Component {
           .setBlock(isActive ? DEFAULT_NODE : type)
       }
     }
-
     // Handle the extra wrapping required for list buttons.
     else {
       const isList = this.hasBlock('list-item')
@@ -432,7 +450,7 @@ export default class SlateEdtior extends Component {
           .unwrapBlock('numbered-list')
       } else if (isList) {
         transform
-          .unwrapBlock(type == 'bulleted-list' ? 'numbered-list' : 'bulleted-list')
+          .unwrapBlock(type === 'bulleted-list' ? 'numbered-list' : 'bulleted-list')
           .wrapBlock(type)
       } else {
         transform

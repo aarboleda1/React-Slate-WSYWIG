@@ -1,5 +1,5 @@
-import React, {Component, PropTypes} from 'react';
-
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 export default class Popover extends Component {
 	static propTypes = {
 		addItem: PropTypes.func,
@@ -7,20 +7,14 @@ export default class Popover extends Component {
 		inputUrl: PropTypes.string, 
 		handleTextChange: PropTypes.func,
 		onAddImage: PropTypes.func,
+		popOverType: PropTypes.string.isRequired,
+		onAddLink: PropTypes.func,
 	}
 	constructor(props){
 		super(props)
-
-	}
-	componentWillReceiveProps(props){
-		// console.log(props)
-	}
-	componentDidUpdate(props) {
-		// console.log('did update')
 	}
 	handleImageChange = (e) => {
     e.preventDefault();
-
     let reader = new FileReader();
     let file = e.target.files[0];
 
@@ -35,14 +29,41 @@ export default class Popover extends Component {
       reader.readAsDataURL(file);
     } 
 	}
+	onAddEntity = (event) => {
+		const {onAddLink, onAddImage, popOverType} = this.props;
+		switch(popOverType){
+			case('imageUrl'):
+				onAddImage(event);
+				break;
+			case('linkUrl'):
+				onAddLink()
+				break;
+			default:
+				return;
+		}
+	}
 	render() {
-		const {inputUrl, isActive, handleTextChange, onAddImage} = this.props;
+		const {inputUrl, isActive, handleTextChange, popOverType, targetText} = this.props;
 		return(
-			<div className={`rs-popover ${isActive ? 'active' : null}`}>
-			  <h6>Insert Image Link</h6>
-				<input value={inputUrl} onChange={(e) => handleTextChange(e.target.value) }/>
+			<div className={`rs-popover ${isActive ? 'active' : null}`}>			
+			  <h6>{popOverType === 'imageUrl' ? 'Insert Image URL' : 'Insert URL'}</h6>
+				<input 
+					value={inputUrl} 
+					onChange={(event) => handleTextChange(event.target.value, popOverType) }
+				/>
+				{	popOverType === 'linkUrl' ?
+					<div className="rs-button-container">
+						<h6>Target</h6> 
+						<input 
+							value={targetText} 
+							onChange={(event) => handleTextChange(event.target.value, 'targetText') }
+						/> 
+					</div>
+						: null
+				}
+				
 				<div className="rs-button-container">
-					<button onMouseDown={(e) => onAddImage(e)} className="se button">Add</button>
+					<button onMouseDown={(event) => this.onAddEntity(event)} className="se button">Add</button>
 					<button className="se button">Cancel</button>					
 				</div>
 				{/*<div className="rs-button-container"> 
