@@ -2,6 +2,7 @@
 @import 'layout/header';
 @import 'base/all';
 @import 'base/color';
+@import 'components/all';
 .app__container {
     min-width: 600px;
     width: 100%;
@@ -10,35 +11,39 @@
     height: 100%;
     min-height: 800px;
     .header {
-        height: 60px;
-        background: $primary-color;
+        height: 65px;
+        background-image: -webkit-linear-gradient(108deg, #70d0ee, #2a84d2 90%);
         top: 0;
         width: 100%;
         padding-top: 0px;
         text-align: center;
+        .h1,
+        p,
+        a,
+        h5 {
+            font-family: $primary-font-family;
+            color: $primary-font-color;
+        }
         .se.info {
             text-align: left;
             padding: 0;
-            margin: 32px 3px 12px 3px;
+            margin: 34px 3px 12px 3px;
             position: absolute;
             p,
             a {
                 font-size: $small-font;
                 margin: $no-font-margin;
                 font-weight: $primary-font-weight;
-                color: $primary-font-color;
             }
         }
         h1 {
-            font-weight: $primary-font-weight;
+            font-weight: 500;
             margin-top: 0px;
-            color: $primary-font-color;
-            font-family: Roboto;
-            margin-bottom: 0px;
+            color: #FAFAFA;
+            padding-top: 12px;
         }
         h5 {
             font-weight: $primary-font-weight;
-            color: $primary-font-color;
             margin-top: 0px;
             font-style: italic;
         }
@@ -53,13 +58,16 @@
     }
     .main__container {
         min-height: 100vh;
-        // margin-left: 130px;
-        margin: 0px 20vw 70px 20vw;
+        display: flex;
+        justify-content: center;
+        margin: 0px 20px;
         .editor__wrapper {
             background-color: white;
             min-height: 88vh;
             padding: 15px;
             border: 1px solid #ddd;
+            margin: 0 10px;
+            width: 72%;
             .menu.toolbar {
                 display: flex;
                 flex-direction: row;

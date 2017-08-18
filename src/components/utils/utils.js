@@ -15,3 +15,8 @@ export const MarkHotKey = (options) => {
     }
 	}
 }
+
+const serializedHTML = (serializedHtml) => {
+	console.log('hello world!')
+}
+export default {serializedHTML};
