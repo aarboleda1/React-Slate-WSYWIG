@@ -85,7 +85,7 @@ export default class SlateEdtior extends Component {
 						const {data} = node;
 						const code = data.get('code');
 						const isSelected = state.selection.hasFocusIn(node);
-						return <span className={`emoji ${isSelected ? 'selected' : ''}`} {...props.attributes} contentEditable={false}>{code}</span>
+						return (<span className={`emoji ${isSelected ? 'selected' : ''}`} {...props.attributes} contentEditable={false}>{code}</span>);
 					}		
 	
 				},
@@ -105,13 +105,9 @@ export default class SlateEdtior extends Component {
 					underlined: {
 						textDecoration: 'underline'
 					},
-					'align-left': {
-						textAlign: 'left',
-					},
-					'align-right':{
-						textAlign: 'right',
-					}
-	
+					color: {
+						color: 'blue'
+					}	
 				},
 				rules: [
 						// Rule to insert a paragraph block if the document is empty.
@@ -154,6 +150,7 @@ export default class SlateEdtior extends Component {
 					{this.renderMarkButton('italic', 'format_italic')}
 					{this.renderMarkButton('underlined', 'format_underlined')}
 					{this.renderMarkButton('code', 'code')}
+					{/*{this.renderMarkButton('color', 'format_paint')}*/}
 					{this.renderAlignmentButton('align-left', 'format_align_left')}
 					{this.renderAlignmentButton('align-center', 'format_align_center')}
 					{this.renderAlignmentButton('align-right', 'format_align_right')}					
@@ -209,8 +206,7 @@ export default class SlateEdtior extends Component {
 			</div>
     )
   }	
-	componentDidUpdate = () => {
-	}
+
 	handleTextChange = (text, type) => {
 		switch(type) {
 			case('imageUrl'):
@@ -268,6 +264,7 @@ export default class SlateEdtior extends Component {
 					this.setState({
 						isEmojiModalExpanded: !isEmojiModalExpanded,
 					})
+					break;
 				default: 
 					return;
 			}
@@ -398,7 +395,9 @@ export default class SlateEdtior extends Component {
 	}
 	onClickAlignment = (alignmentType) => {
 		let {state} = this.state
-		const getType = state => state.blocks.first().type
+		const getType = state => state.blocks.first().type;
+		console.log(state.blocks.first(), 'is the first?')
+		console.log('hello world')
 		state = state
 			.transform()
 			.setBlock({
@@ -427,34 +426,12 @@ export default class SlateEdtior extends Component {
 			.apply()
 		this.setState({state});
 	}
-	alignmentMarkStrategy = (state, align) => {
-		const getType = state => state.blocks.first().type		
-		state
-			.transform()
-			.setBlock({
-				type: 'alignment',
-				data: { align, currentBlockType: getType(state) }
-			})
-			.focus()
-			.apply()	
-		this.setState({state})
-	}
 	onClickBlock = (e, type) => {
     e.preventDefault()
     let { state } = this.state
     const transform = state.transform()
 		const { document } = state
-		if (type.includes('align')) {
-				const getType = state => state.blocks.first().type		
-				return state
-					.transform()
-					.setBlock({
-						type: 'alignment',
-						data: { align: 'right', currentBlockType: getType(state) }
-					})
-					.focus()
-					.apply()
-		}
+				
     // Handle everything but list buttons.
     if (type !== 'bulleted-list' && type !== 'numbered-list') {
       const isActive = this.hasBlock(type)
@@ -494,7 +471,6 @@ export default class SlateEdtior extends Component {
           .wrapBlock(type)
       }
     }
-
     state = transform.apply()
     this.setState({ state })
   }	

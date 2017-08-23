@@ -46,3 +46,7 @@ input,
     font-family: $primary-font-family;
     font-weight: $primary-font-weight;
 }
+
+img.active {
+    box-shadow: 0 0 0 2px blue;
+}
