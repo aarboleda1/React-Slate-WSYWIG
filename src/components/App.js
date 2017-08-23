@@ -5,10 +5,10 @@ import Main from './layouts/Main';
 // import DraftEditor from './DraftEditor';
 import Header from './layouts/Header'
 import SlateEditor from './SlateEditor';
-import HtmlViewer from './HtmlViewer';
+// import HtmlViewer from './HtmlViewer';
 import serializedHTML from './utils/utils';
 // import SerializedEditor from './SerializedEditor.js';
-import Sidebar from './layouts/Sidebar';
+// import Sidebar from './layouts/Sidebar';
 class App extends Component {
   render() {
     return (
