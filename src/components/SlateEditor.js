@@ -4,8 +4,7 @@ import isImage from 'is-image';
 import isUrl from 'is-url';
 import initialState from './state.json';
 import {MarkHotKey} from './utils/utils';
- import {MenuList, MenuItem} from 'material-ui/Menu';
- import Popover from './plugins/Popover';
+import Popover from './plugins/Popover';
 
 const DEFAULT_NODE = 'paragraph';
 // let rule = new Html();
@@ -27,7 +26,7 @@ const RULES =[
 		}
 	}, 
 ]
-const serializer = new Html({RULES})
+// const serializer = new Html({RULES})
 
 
 const plugins = [
@@ -48,6 +47,7 @@ export default class SlateEdtior extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
+			isEmojiModalExpanded: false,
 			isImageExpanded: false,
 			isLinkModalExpanded: false,
 			imageUrl: '',
@@ -79,7 +79,14 @@ export default class SlateEdtior extends Component {
 					'numbered-list': props => <ol {...props.attributes}>{props.children}</ol>,								
 					'align-left': props => <div style={{textAlign: 'left'}}>{props.children}</div>,
 					'align-right': props => <div style={{textAlign: 'right'}}>{props.children}</div>,
-					'align-center': props => <div style={{textAlign: 'center'}}>{props.children}</div>				
+					'align-center': props => <div style={{textAlign: 'center'}}>{props.children}</div>,
+					'emoji': (props) => {
+						const {state, node} = props;
+						const {data} = node;
+						const code = data.get('code');
+						const isSelected = state.selection.hasFocusIn(node);
+						return <span className={`emoji ${isSelected ? 'selected' : ''}`} {...props.attributes} contentEditable={false}>{code}</span>
+					}		
 	
 				},
 				marks: {
@@ -155,6 +162,7 @@ export default class SlateEdtior extends Component {
 					{this.renderBlockButton('block-quote', 'format_quote')}
 					{this.renderBlockButton('numbered-list', 'format_list_numbered')}
 					{this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
+					
 					<span className="se button" onMouseDown={(e) => this.onOpenModal(e, 'ImageModal') }>
 						<span className="material-icons">image</span>
 						<Popover 
@@ -175,7 +183,15 @@ export default class SlateEdtior extends Component {
 							onAddLink={this.onAddLink}
 							popOverType={'linkUrl'}
 						/>							
-					</span>		
+					</span>	
+					<span className="se button" style={{paddingLeft: '10px'}} onMouseDown={(e) => this.onOpenModal(e, 'EmojiModal')}>
+						<span className="material-icons">{'😎'}</span>
+						<Popover 
+							isActive={this.state.isEmojiModalExpanded}
+							popOverType={'emoji'}
+							onClickEmoji={this.onClickEmoji}
+						/>							
+					</span>							
 				</div>
 				<div className="editor">
 					<Editor
@@ -220,8 +236,23 @@ export default class SlateEdtior extends Component {
 		const {state} = this.state;
 		return state.inlines.some(inline => inline.type === 'link');
 	}
+  onClickEmoji = (e, code) => {
+    e.preventDefault()
+    let { state } = this.state
+
+    state = state
+      .transform()
+      .insertInline({
+        type: 'emoji',
+        isVoid: true,
+        data: { code }
+      })
+      .apply()
+
+    this.setState({ state })
+  }	
   onOpenModal = (e, modalType) => {
-		const {isImageExpanded, isLinkModalExpanded} = this.state;
+		const {isImageExpanded, isLinkModalExpanded, isEmojiModalExpanded} = this.state;
 		if (e.target.className === 'se button' || e.target.className === 'material-icons') {
 			switch(modalType) {
 				case('ImageModal'):
@@ -233,6 +264,10 @@ export default class SlateEdtior extends Component {
 					this.setState({
 						isLinkModalExpanded: !isLinkModalExpanded})
 					break;
+				case('EmojiModal'):
+					this.setState({
+						isEmojiModalExpanded: !isEmojiModalExpanded,
+					})
 				default: 
 					return;
 			}
@@ -441,7 +476,7 @@ export default class SlateEdtior extends Component {
     else {
       const isList = this.hasBlock('list-item')
       const isType = state.blocks.some((block) => {
-        return !!document.getClosest(block.key, parent => parent.type == type)
+        return !!document.getClosest(block.key, parent => parent.type === type)
       })
 
       if (isList && isType) {
@@ -465,11 +500,11 @@ export default class SlateEdtior extends Component {
   }	
 	hasMark = (type) => {
     const { state } = this.state
-    return state.marks.some(mark => mark.type == type)
+    return state.marks.some(mark => mark.type === type)
 	}
 	
   hasBlock = (type) => {
     const { state } = this.state
-    return state.blocks.some(node => node.type == type)
+    return state.blocks.some(node => node.type === type)
   }
 }
